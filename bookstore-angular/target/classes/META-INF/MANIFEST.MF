@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Implementation-Title: bookstore-angular
+Implementation-Version: 0.0.1-SNAPSHOT
+Built-By: ss186235
+Implementation-Vendor-Id: com.bookstore
+Build-Jdk: 1.8.0_144
+Implementation-URL: http://projects.spring.io/spring-boot/bookstore-an
+ gular/
+Created-By: Maven Integration for Eclipse
+Implementation-Vendor: Pivotal Software, Inc.
+
