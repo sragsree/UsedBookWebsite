@@ -84,7 +84,7 @@ public class CartItemServiceImpl implements CartItemService{
     }
     
     public CartItem findById(Long id) {
-        return cartItemRepository.findOne(id);
+        return cartItemRepository.findById(id).orElse(null);
     }
     
     public CartItem save(CartItem cartItem) {

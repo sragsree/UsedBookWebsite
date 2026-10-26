@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Campus Used Books · Store</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/app.js" defer></script>
+  </head>
+  <body>
+    <header>
+      <a href="/">Campus Used Books</a>
+      <nav><a href="/">Store</a><a href="/admin.html">Admin portal</a></nav>
+    </header>
+    <main>
+      <p class="eyebrow">SDSU student prototype</p>
+      <h1>Give good books another semester.</h1>
+      <p>
+        Buy used textbooks or rent for 30 days. Campus pickup. Demo checkout
+        records orders and inventory changes; no money is charged.
+      </p>
+      <div id="notice" role="status" aria-live="polite"></div>
+      <section id="account">
+        <h2>Sign in</h2>
+        <p>
+          Local demo: <code>student / student-demo-only</code>. Admin:
+          <code>admin / admin-demo-only</code>.
+        </p>
+        <form id="login">
+          <label
+            >Username<input
+              name="username"
+              autocomplete="username"
+              required /></label
+          ><label
+            >Password<input
+              name="password"
+              autocomplete="current-password"
+              type="password"
+              required /></label
+          ><button>Sign in</button>
+        </form>
+        <details>
+          <summary>Create a student account</summary>
+          <form id="register">
+            <label
+              >Username<input
+                name="username"
+                pattern="[A-Za-z0-9_-]{3,40}"
+                required /></label
+            ><label>Email<input name="email" type="email" required /></label
+            ><label
+              >Password (12–72 characters)<input
+                name="password"
+                type="password"
+                minlength="12"
+                maxlength="72"
+                required /></label
+            ><button>Create account</button>
+          </form>
+        </details>
+      </section>
+      <section id="signed-in" hidden>
+        <p id="identity"></p>
+        <button id="logout">Sign out</button>
+      </section>
+      <section>
+        <div class="section-head">
+          <h2>Book shelf</h2>
+          <label
+            >Search title, author or ISBN<input
+              id="search"
+              type="search"
+              placeholder="Search books"
+          /></label>
+        </div>
+        <div id="catalog" class="grid"></div>
+      </section>
+      <section id="shopping" hidden>
+        <h2>Your cart</h2>
+        <div id="cart"></div>
+        <button id="checkout">Confirm demo order · no charge</button>
+        <h2>Your orders and rentals</h2>
+        <div id="orders"></div>
+      </section>
+    </main>
+    <footer>
+      Local portfolio prototype. No payment processing, shipping, automated late
+      fees or outbound email.
+    </footer>
+  </body>
+</html>

@@ -17,6 +17,7 @@ import com.example.bookstore.domain.User;
  * @version $Id: $
  */
 public interface OrderRepository extends CrudRepository<Order, Long> {
+    java.util.List<Order> findByUserUsernameOrderByIdDesc(String username);
     List<Order> findByUser(User user);
 }
 

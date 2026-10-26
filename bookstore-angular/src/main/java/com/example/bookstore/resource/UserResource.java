@@ -5,178 +5,61 @@
  */
 package com.example.bookstore.resource;
 
-import java.security.Principal;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.example.bookstore.config.SecurityConfig;
 import com.example.bookstore.config.SecurityUtility;
 import com.example.bookstore.domain.User;
-import com.example.bookstore.domain.security.Role;
-import com.example.bookstore.domain.security.UserRole;
+import com.example.bookstore.domain.security.*;
 import com.example.bookstore.service.UserService;
-import com.example.bookstore.utility.MailConstructor;
+import java.security.Principal;
+import java.util.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
-/**
- * @author ss186235
- * @version $Id: $
- */
 @RestController
 @RequestMapping("/user")
 public class UserResource {
-    
-    @Autowired
-    private UserService userService;
-    
-    @Autowired
-    private MailConstructor mailConstructor;
-    
-    @Autowired
-    private JavaMailSender mailSender;
-    
-    @RequestMapping(value="/newUser", method=RequestMethod.POST)
-    public ResponseEntity newUserPost(
-            HttpServletRequest request,
-            @RequestBody HashMap<String, String> mapper
-            ) throws Exception {
-        String username = mapper.get("username");
-        String userEmail = mapper.get("email");
-        
-        if(userService.findByUsername(username) != null) {
-            return new ResponseEntity("usernameExists", HttpStatus.BAD_REQUEST);
-        }
-        
-        if(userService.findByEmail(userEmail) != null) {
-            return new ResponseEntity("emailExists", HttpStatus.BAD_REQUEST);
-        }
-        
-        User user = new User();
-        user.setUsername(username);
-        user.setEmail(userEmail);
-        
-        String password = SecurityUtility.randomPassword();
-        
-        String encryptedPassword = SecurityUtility.passwordEncoder().encode(password);
-        user.setPassword(encryptedPassword);
-        
-        Role role = new Role();
-        role.setRoleId(1);
-        role.setName("ROLE_USER");
-        Set<UserRole> userRoles = new HashSet<>();
-        userRoles.add(new UserRole(user, role));
-        userService.createUser(user, userRoles);
-        
-        SimpleMailMessage email = mailConstructor.constructNewUserEmail(user, password);
-        mailSender.send(email);
-        
-        return new ResponseEntity("User Added Successfully!", HttpStatus.OK);
-        
-    }
-    
-    @RequestMapping(value="/forgetPassword", method=RequestMethod.POST)
-    public ResponseEntity forgetPasswordPost(
-            HttpServletRequest request,
-            @RequestBody HashMap<String, String> mapper
-            ) throws Exception {
-        
-        User user = userService.findByEmail(mapper.get("email"));
-        
-        if(user == null) {
-            return new ResponseEntity("Email not found", HttpStatus.BAD_REQUEST);
-        }
-        String password = SecurityUtility.randomPassword();
-        
-        String encryptedPassword = SecurityUtility.passwordEncoder().encode(password);
-        user.setPassword(encryptedPassword);
-        userService.save(user);
-        
-        SimpleMailMessage newEmail = mailConstructor.constructNewUserEmail(user, password);
-        mailSender.send(newEmail);
-        
-        return new ResponseEntity("Email sent!", HttpStatus.OK);
-        
-    }
-    
-    @RequestMapping(value="/updateUserInfo", method=RequestMethod.POST)
-    public ResponseEntity profileInfo(
-                @RequestBody HashMap<String, Object> mapper
-            ) throws Exception{
-        
-        int id = (Integer) mapper.get("id");
-        String email = (String) mapper.get("email");
-        String username = (String) mapper.get("username");
-        String firstName = (String) mapper.get("firstName");
-        String lastName = (String) mapper.get("lastName");
-        String newPassword = (String) mapper.get("newPassword");
-        String currentPassword = (String) mapper.get("currentPassword");
-        
-        User currentUser = userService.findById(Long.valueOf(id));
-        
-        if(currentUser == null) {
-            throw new Exception ("User not found");
-        }
-        
-        if(userService.findByEmail(email) != null) {
-            if(userService.findByEmail(email).getId() != currentUser.getId()) {
-                return new ResponseEntity("Email not found!", HttpStatus.BAD_REQUEST);
-            }
-        }
-        
-        if(userService.findByUsername(username) != null) {
-            if(userService.findByUsername(username).getId() != currentUser.getId()) {
-                return new ResponseEntity("Username not found!", HttpStatus.BAD_REQUEST);
-            }
-        }
-        
-        SecurityConfig securityConfig = new SecurityConfig();
-        
-        
-            BCryptPasswordEncoder passwordEncoder = SecurityUtility.passwordEncoder();
-            String dbPassword = currentUser.getPassword();
-            
-            if(null != currentPassword)
-            if(passwordEncoder.matches(currentPassword, dbPassword)) {
-                if(newPassword != null && !newPassword.isEmpty() && !newPassword.equals("")) {
-                    currentUser.setPassword(passwordEncoder.encode(newPassword));
-                }
-                currentUser.setEmail(email);
-            } else {
-                return new ResponseEntity("Incorrect current password!", HttpStatus.BAD_REQUEST);
-            }
-        
-        
-        currentUser.setFirstName(firstName);
-        currentUser.setLastName(lastName);
-        currentUser.setUsername(username);
-        
-        
-        userService.save(currentUser);
-        
-        return new ResponseEntity("Update Success", HttpStatus.OK);
-    }
-    
-    @RequestMapping("/getCurrentUser")
-    public User getCurrentUser(Principal principal) {
-        User user = new User();
-        if (null != principal) {
-            user = userService.findByUsername(principal.getName());
-        }
+  private final UserService users;
 
-        return user;
-    }
+  public UserResource(UserService users) {
+    this.users = users;
+  }
 
+  @PostMapping("/newUser")
+  public Map<String, String> register(@RequestBody Map<String, String> body) {
+    if (body == null || body.values().stream().anyMatch(Objects::isNull))
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Account fields must be text");
+    String username = body.getOrDefault("username", "").trim(),
+        email = body.getOrDefault("email", "").trim(),
+        password = body.getOrDefault("password", "");
+    if (!username.matches("[A-Za-z0-9_-]{3,40}")
+        || !email.matches("[^@ ]+@[^@ ]+[.][^@ ]+")
+        || password.length() < 12
+        || password.getBytes(java.nio.charset.StandardCharsets.UTF_8).length > 72)
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST,
+          "Username 3–40 letters/digits, valid email and password 12–72 characters required");
+    if (users.findByUsername(username) != null || users.findByEmail(email) != null)
+      throw new ResponseStatusException(HttpStatus.CONFLICT, "Account already exists");
+    User u = new User();
+    u.setUsername(username);
+    u.setEmail(email);
+    u.setPassword(SecurityUtility.passwordEncoder().encode(password));
+    Role role = new Role();
+    role.setRoleId(1);
+    role.setName("ROLE_USER");
+    users.createUser(u, Set.of(new UserRole(u, role)));
+    return Map.of("message", "Account created. Sign in with your password.");
+  }
+
+  @GetMapping("/getCurrentUser")
+  public Map<String, Object> current(Principal principal) {
+    User u = users.findByUsername(principal.getName());
+    return Map.of(
+        "username",
+        u.getUsername(),
+        "email",
+        u.getEmail(),
+        "admin",
+        u.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN")));
+  }
 }

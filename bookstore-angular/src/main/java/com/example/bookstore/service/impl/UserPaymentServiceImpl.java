@@ -22,11 +22,11 @@ public class UserPaymentServiceImpl implements UserPaymentService {
     private UserPaymentRepository userPaymentRepository;
     
     public UserPayment findById(Long id) {
-        return userPaymentRepository.findOne(id);
+        return userPaymentRepository.findById(id).orElse(null);
     }
     
     public void removeById(Long id) {
-        userPaymentRepository.delete(id);
+        userPaymentRepository.deleteById(id);
     }
     
 }

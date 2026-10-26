@@ -18,6 +18,9 @@ import com.example.bookstore.domain.User;
 public interface UserRepository extends CrudRepository<User, Long>
 {
     User findByUsername(String username);
+    @org.springframework.data.jpa.repository.Lock(jakarta.persistence.LockModeType.PESSIMISTIC_WRITE)
+    @org.springframework.data.jpa.repository.Query("select u from User u where u.username = :username")
+    User lockByUsername(@org.springframework.data.repository.query.Param("username") String username);
     User findByEmail(String email);
     List<User> findAll();
 }

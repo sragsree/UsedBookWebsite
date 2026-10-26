@@ -31,7 +31,7 @@ public class BookServiceImpl implements BookService{
 	}
 	
 	public Book findOne(Long id) {
-		return bookRepository.findOne(id);
+		return bookRepository.findById(id).orElse(null);
 	}
 	
 	public Book save(Book book) {
@@ -53,6 +53,6 @@ public class BookServiceImpl implements BookService{
 	}
 	
 	public void removeOne(Long id) {
-		bookRepository.delete(id);
+		bookRepository.deleteById(id);
 	}
 }

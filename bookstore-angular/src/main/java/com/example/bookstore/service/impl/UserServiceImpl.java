@@ -61,7 +61,7 @@ public class UserServiceImpl implements UserService{
             LOG.info("User with username {} already exist. Nothing will be done. ", user.getUsername());
         } else {
             for (UserRole ur : userRoles) {
-                roleRepository.save(ur.getRole());
+                ur.setRole(roleRepository.save(ur.getRole()));
             }
             
             user.getUserRoles().addAll(userRoles);
@@ -86,7 +86,7 @@ public class UserServiceImpl implements UserService{
     
     @Override
     public User findById(Long id) {
-        return userRepository.findOne(id);
+        return userRepository.findById(id).orElse(null);
     }
     
     @Override

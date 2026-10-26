@@ -5,52 +5,35 @@
  */
 package com.example.bookstore.resource;
 
-import java.util.Collections;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.example.bookstore.service.UserService;
-/**
- * @author ss186235
- * @version $Id: $
- */
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.security.web.csrf.CsrfToken;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class LoginResource {
-    @Autowired
-    private UserService userService;
-    
-    @RequestMapping("/token")
-    public Map<String, String> token(HttpSession session, HttpServletRequest request) {
-        System.out.println(request.getRemoteHost());
-        
-        String remoteHost = request.getRemoteHost();
-        int portNumber = request.getRemotePort();
-        
-        System.out.println(remoteHost+":"+portNumber);
-        System.out.println(request.getRemoteAddr());
-        
-        return Collections.singletonMap("token", session.getId());
-    }
-    
-    @RequestMapping("/checkSession")
-    public ResponseEntity checkSession() {
-        return new ResponseEntity("Session Active!", HttpStatus.OK);
-    }
-    
-    @RequestMapping(value="/user/logout", method=RequestMethod.POST)
-    public ResponseEntity logout(){
-        SecurityContextHolder.clearContext();
-        return new ResponseEntity("Logout Successfully!", HttpStatus.OK);
-    }
+  @GetMapping("/api/csrf")
+  public Map<String, String> csrf(CsrfToken token) {
+    return Map.of("token", token.getToken(), "header", token.getHeaderName());
+  }
+
+  @PostMapping("/token")
+  public Map<String, String> login(Authentication authentication, HttpServletRequest request) {
+    request.getSession(true);
+    request.changeSessionId();
+    request
+        .getSession()
+        .setAttribute(
+            HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
+            SecurityContextHolder.getContext());
+    return Map.of("username", authentication.getName());
+  }
+
+  @GetMapping("/checkSession")
+  public Map<String, String> session(Authentication auth) {
+    return Map.of("username", auth.getName());
+  }
 }

@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Campus Used Books · Inventory</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/app.js" defer></script>
+  </head>
+  <body data-admin="true">
+    <header>
+      <a href="/">Campus Used Books</a>
+      <nav><a href="/">Store</a><a href="/admin.html">Admin portal</a></nav>
+    </header>
+    <main>
+      <p class="eyebrow">Inventory operations</p>
+      <h1>Manage books. Close the rental loop.</h1>
+      <p>
+        Administrator access required for inventory changes, price lookup and
+        rental returns.
+      </p>
+      <div id="notice" role="status" aria-live="polite"></div>
+      <section id="account">
+        <h2>Sign in</h2>
+        <p>Local demo: <code>admin / admin-demo-only</code>.</p>
+        <form id="login">
+          <label
+            >Username<input
+              name="username"
+              autocomplete="username"
+              required /></label
+          ><label
+            >Password<input
+              name="password"
+              autocomplete="current-password"
+              type="password"
+              required /></label
+          ><button>Sign in</button>
+        </form>
+      </section>
+      <section id="signed-in" hidden>
+        <p id="identity"></p>
+        <button id="logout">Sign out</button>
+      </section>
+      <div id="administration" hidden>
+        <section>
+          <h2 id="editor-title">Add a used book</h2>
+          <form id="book-editor">
+            <input name="id" type="hidden" /><label
+              >Title<input name="title" maxlength="200" required /></label
+            ><label
+              >Author<input name="author" maxlength="200" required /></label
+            ><label
+              >ISBN-10 or ISBN-13<input
+                name="isbn"
+                pattern="([0-9]{13}|[0-9]{9}[0-9X])"
+                required /></label
+            ><label
+              >Sale price (USD)<input
+                name="ourPrice"
+                type="number"
+                min="0.01"
+                max="10000"
+                step="0.01"
+                required /></label
+            ><label
+              >30-day rental (USD)<input
+                name="rentalPrice"
+                type="number"
+                min="0.01"
+                max="10000"
+                step="0.01"
+                required /></label
+            ><label
+              >Available copies<input
+                name="inStockNumber"
+                type="number"
+                min="0"
+                step="1"
+                required /></label
+            ><label>Category<input name="category" /></label
+            ><label>Description<textarea name="description"></textarea></label
+            ><label class="check"
+              ><input name="active" type="checkbox" checked /> Listed in
+              store</label
+            ><button>Save book</button
+            ><button type="button" id="cancel-edit">New book</button>
+          </form>
+        </section>
+        <section>
+          <h2>Inventory</h2>
+          <div id="inventory" class="grid"></div>
+        </section>
+        <section>
+          <h2>Price research</h2>
+          <p>
+            Default mode parses bundled sample retailer HTML. Samples are not
+            current market prices. Live mode requires configured retailer URL
+            templates.
+          </p>
+          <form id="price-lookup">
+            <label>ISBN<input name="isbn" required /></label
+            ><button>Compare offers</button>
+          </form>
+          <div id="prices"></div>
+        </section>
+        <section>
+          <h2>Rental desk</h2>
+          <p>Confirm physical return before restoring stock.</p>
+          <div id="rentals"></div>
+        </section>
+      </div>
+    </main>
+    <footer>
+      Administrator changes persist locally. Archived books remain in past
+      orders. No real card data accepted.
+    </footer>
+  </body>
+</html>

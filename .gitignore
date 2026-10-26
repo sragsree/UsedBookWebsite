@@ -1,0 +1,8 @@
+**/node_modules/
+**/target/
+**/dist/
+**/.angular/
+**/.DS_Store
+.env
+.data/
+*.log

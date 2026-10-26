@@ -20,10 +20,10 @@ public class UserShippingServiceImpl implements UserShippingService{
     private UserShippingRepository userShippingRepository;
     
     public UserShipping findById(Long id) {
-        return userShippingRepository.findOne(id);
+        return userShippingRepository.findById(id).orElse(null);
     }
     
     public void removeById(Long id) {
-        userShippingRepository.delete(id);
+        userShippingRepository.deleteById(id);
     }
 }

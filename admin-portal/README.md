@@ -1,3 +1,5 @@
+> Historical Angular 5 client. The supported, tested store and admin portals now run with the Spring application. See the [root README](../README.md). The original client is retained for provenance; its token/payment contracts are not compatible with the repaired API.
+
 # AdminPortal
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.6.7.

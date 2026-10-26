@@ -5,181 +5,188 @@
  */
 package com.example.bookstore.domain;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Transient;
 import java.io.Serializable;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Transient;
-
 import org.springframework.web.multipart.MultipartFile;
 
 @Entity
-public class Book implements Serializable{
-    private static final long serialVersionUID=425345L;
-    
-    @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
-    private Long id;
-    
-    private String title;
-    private String author;
-    private String publisher;
-    private String publicationDate;
-    private String language;
-    private String category;
-    private int numberOfPages;
-    private String format;
-    private String isbn;
-    private double shippingWeight;
-    private double listPrice;
-    private double ourPrice;
-    private boolean active=true;
-    
-    @Column(columnDefinition="text")
-    private String description;
-    private int inStockNumber;
-    
-    @Transient
-    private MultipartFile bookImage;
+public class Book implements Serializable {
+  private static final long serialVersionUID = 425345L;
 
-    public Long getId() {
-        return id;
-    }
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private Long id;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+  private String title;
+  private String author;
+  private String publisher;
+  private String publicationDate;
+  private String language;
+  private String category;
+  private int numberOfPages;
+  private String format;
+  private String isbn;
+  private double shippingWeight;
+  private double listPrice;
+  private double ourPrice;
+  private double rentalPrice;
+  @jakarta.persistence.Version private Long version;
 
-    public String getTitle() {
-        return title;
-    }
+  public double getRentalPrice() {
+    return rentalPrice;
+  }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
+  public void setRentalPrice(double price) {
+    this.rentalPrice = price;
+  }
 
-    public String getAuthor() {
-        return author;
-    }
+  private boolean active = true;
 
-    public void setAuthor(String author) {
-        this.author = author;
-    }
+  @Column(columnDefinition = "text")
+  private String description;
 
-    public String getPublisher() {
-        return publisher;
-    }
+  private int inStockNumber;
 
-    public void setPublisher(String publisher) {
-        this.publisher = publisher;
-    }
+  @Transient private MultipartFile bookImage;
 
-    public String getPublicationDate() {
-        return publicationDate;
-    }
+  public Long getId() {
+    return id;
+  }
 
-    public void setPublicationDate(String publicationDate) {
-        this.publicationDate = publicationDate;
-    }
+  public void setId(Long id) {
+    this.id = id;
+  }
 
-    public String getLanguage() {
-        return language;
-    }
+  public String getTitle() {
+    return title;
+  }
 
-    public void setLanguage(String language) {
-        this.language = language;
-    }
+  public void setTitle(String title) {
+    this.title = title;
+  }
 
-    public String getCategory() {
-        return category;
-    }
+  public String getAuthor() {
+    return author;
+  }
 
-    public void setCategory(String category) {
-        this.category = category;
-    }
+  public void setAuthor(String author) {
+    this.author = author;
+  }
 
-    public int getNumberOfPages() {
-        return numberOfPages;
-    }
+  public String getPublisher() {
+    return publisher;
+  }
 
-    public void setNumberOfPages(int numberOfPages) {
-        this.numberOfPages = numberOfPages;
-    }
+  public void setPublisher(String publisher) {
+    this.publisher = publisher;
+  }
 
-    public String getFormat() {
-        return format;
-    }
+  public String getPublicationDate() {
+    return publicationDate;
+  }
 
-    public void setFormat(String format) {
-        this.format = format;
-    }
+  public void setPublicationDate(String publicationDate) {
+    this.publicationDate = publicationDate;
+  }
 
-    public String getIsbn() {
-        return isbn;
-    }
+  public String getLanguage() {
+    return language;
+  }
 
-    public void setIsbn(String isbn) {
-        this.isbn = isbn;
-    }
+  public void setLanguage(String language) {
+    this.language = language;
+  }
 
-    public double getShippingWeight() {
-        return shippingWeight;
-    }
+  public String getCategory() {
+    return category;
+  }
 
-    public void setShippingWeight(double shippingWeight) {
-        this.shippingWeight = shippingWeight;
-    }
+  public void setCategory(String category) {
+    this.category = category;
+  }
 
-    public double getListPrice() {
-        return listPrice;
-    }
+  public int getNumberOfPages() {
+    return numberOfPages;
+  }
 
-    public void setListPrice(double listPrice) {
-        this.listPrice = listPrice;
-    }
+  public void setNumberOfPages(int numberOfPages) {
+    this.numberOfPages = numberOfPages;
+  }
 
-    public double getOurPrice() {
-        return ourPrice;
-    }
+  public String getFormat() {
+    return format;
+  }
 
-    public void setOurPrice(double ourPrice) {
-        this.ourPrice = ourPrice;
-    }
+  public void setFormat(String format) {
+    this.format = format;
+  }
 
-    public boolean isActive() {
-        return active;
-    }
+  public String getIsbn() {
+    return isbn;
+  }
 
-    public void setActive(boolean active) {
-        this.active = active;
-    }
+  public void setIsbn(String isbn) {
+    this.isbn = isbn;
+  }
 
-    public String getDescription() {
-        return description;
-    }
+  public double getShippingWeight() {
+    return shippingWeight;
+  }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+  public void setShippingWeight(double shippingWeight) {
+    this.shippingWeight = shippingWeight;
+  }
 
-    public int getInStockNumber() {
-        return inStockNumber;
-    }
+  public double getListPrice() {
+    return listPrice;
+  }
 
-    public void setInStockNumber(int inStockNumber) {
-        this.inStockNumber = inStockNumber;
-    }
+  public void setListPrice(double listPrice) {
+    this.listPrice = listPrice;
+  }
 
-    public MultipartFile getBookImage() {
-        return bookImage;
-    }
+  public double getOurPrice() {
+    return ourPrice;
+  }
 
-    public void setBookImage(MultipartFile bookImage) {
-        this.bookImage = bookImage;
-    }
-    
-    
+  public void setOurPrice(double ourPrice) {
+    this.ourPrice = ourPrice;
+  }
+
+  public boolean isActive() {
+    return active;
+  }
+
+  public void setActive(boolean active) {
+    this.active = active;
+  }
+
+  public String getDescription() {
+    return description;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
+  public int getInStockNumber() {
+    return inStockNumber;
+  }
+
+  public void setInStockNumber(int inStockNumber) {
+    this.inStockNumber = inStockNumber;
+  }
+
+  public MultipartFile getBookImage() {
+    return bookImage;
+  }
+
+  public void setBookImage(MultipartFile bookImage) {
+    this.bookImage = bookImage;
+  }
 }
